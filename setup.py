@@ -59,10 +59,5 @@ setup(name='konlpy',
       packages=find_packages(),
       package_data={'konlpy': [
           'data/tagset/*.json',
-          'java/conf/plugin/*/*/*.json',
-          'java/data/*/*',
-          'java/*.jar',
-          'java/bin/kr/lucypark/*/*.class',
-          'java/bin/kr/lucypark/*/*/*.class',
       ]},
       install_requires=requirements())
