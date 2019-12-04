@@ -5,15 +5,24 @@ from time import time
 
 from konlpy import tag
 from konlpy.corpus import kolaw
-from konlpy.utils import csvwrite, pprint
+from konlpy.utils import csvwrite, pprint 
+
+
+_CACHED = {}
+
+
+def _get_cached_tagger(tagger):
+    if tagger not in _CACHED:
+        _CACHED[tagger] = getattr(tag, tagger)()
+    return _CACHED[tagger]
 
 
 def tagging(tagger, text):
     r = []
     try:
-        r = getattr(tag, tagger)().pos(text)
+        r = _get_cached_tagger(tagger).pos(text)
     except Exception as e:
-        print "Uhoh,", e
+        print("Uhoh,", e)
     return r
 
 
@@ -28,21 +37,21 @@ def measure_time(taggers, mult=6):
             r = tagging(tagger, doc[:doclen])
             times.append(time())
             diffs.append(times[-1] - times[-2])
-            print '%s\t%s\t%s' % (tagger[:5], doclen, diffs[-1])
+            print('%s\t%s\t%s' % (tagger[:5], doclen, diffs[-1]))
             pprint(r[:5])
         data.append(diffs)
-        print
+        print()
     return data
 
 
 def measure_accuracy(taggers, text):
-    print '\n%s' % text
+    print('\n%s' % text)
     result = []
     for tagger in taggers:
-        print tagger,
+        print(tagger, end=' ')
         r = tagging(tagger, text)
         pprint(r)
-        result.append([tagger] + map(lambda s: ' / '.join(s), r))
+        result.append([tagger] + [' / '.join(s) for s in r])
     return result
 
 
@@ -79,6 +88,10 @@ if __name__=='__main__':
     taggers = [t for t in dir(tag) if t[0].isupper()]
 
     # Time
+    data = measure_time(taggers, mult=1)  # warm-up the tagger engines
+    with open('morph-loading.csv', 'w') as f:
+        csvwrite(data, f)
+
     data = measure_time(taggers, mult=MULT)
     with open('morph.csv', 'w') as f:
         csvwrite(data, f)
@@ -86,7 +99,7 @@ if __name__=='__main__':
     # Accuracy
     for i, example in enumerate(examples):
         result = measure_accuracy(taggers, example)
-        result = map(lambda *row: [i or '' for i in row], *result)
+        result = list(map(lambda *row: [i or '' for i in row], *result))
         with open('morph-%s.csv' % i, 'w') as f:
             csvwrite(result, f)
 

@@ -24,26 +24,26 @@ For detailed usage instructions see the :doc:`api/konlpy.tag`.
 Comparison between POS tagging classes
 --------------------------------------
 
-Now, we do time and performation analysis for executing the ``pos`` method for each of the classes in the :doc:`api/konlpy.tag`. The experiments were carried out on a Intel i7 CPU with 4 cores, Python 2.7, and KoNLPy 0.4.1.
+Now, we do time and performation analysis for executing the ``pos`` method for each of the classes in the :doc:`api/konlpy.tag`. The experiments were carried out on a Intel i7 CPU with 6 cores, Python 3.6.9, and KoNLPy 0.5.2.
 
 Time analysis [#]_
 ''''''''''''''''''
 
 1. *Loading time*: Class loading time, including dictionary loads.
 
-    - :py:class:`.Kkma`: 5.6988 *secs*
-    - :py:class:`.Komoran`: 5.4866  *secs*
-    - :py:class:`.Hannanum`: 0.6591  *secs*
-    - :py:class:`.Okt` (previous ``Twitter``): 1.4870 *secs*
-    - :py:class:`.Mecab`: 0.0007 *secs*
+    - :py:class:`.Kkma`: 3.6529 *secs*
+    - :py:class:`.Komoran`: 1.4593  *secs*
+    - :py:class:`.Hannanum`: 0.9396  *secs*
+    - :py:class:`.Okt` (previous ``Twitter``): 3.0073 *secs*
+    - :py:class:`.Mecab`: 0.0008 *secs*
 
 2. *Execution time*: Time for executing the ``pos`` method for each class, with 100K characters.
 
-    - :py:class:`.Kkma`: 35.7163 *secs*
-    - :py:class:`.Komoran`: 25.6008 *secs*
-    - :py:class:`.Hannanum`: 8.8251 *secs*
-    - :py:class:`.Okt` (previous ``Twitter``): 2.4714 *secs*
-    - :py:class:`.Mecab`: 0.2838 *secs*
+    - :py:class:`.Kkma`: 34.4037 *secs*
+    - :py:class:`.Komoran`: 1.8722 *secs*
+    - :py:class:`.Hannanum`: 7.1921 *secs*
+    - :py:class:`.Okt` (previous ``Twitter``): 3.8542 *secs*
+    - :py:class:`.Mecab`: 0.2071 *secs*
 
     If we test among a various number of characters, all classes' execution times increase in an exponential manner.
 

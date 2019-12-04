@@ -110,6 +110,13 @@ if sys.version_info[0] < 3:
                     csvwrite(d, f)
         """
         return csvutils.UnicodeWriter(f).writerows(data)
+else:
+    import csv
+
+    # TODO csvread()
+
+    def csvwrite(data, f):
+        return csv.writer(f).writerows(data)
 
 
 def partition(list_, indices):
