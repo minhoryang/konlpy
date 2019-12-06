@@ -1,0 +1,26 @@
+# FIXME: Replace this to platform independent environment.
+FROM ubuntu:bionic AS mecab-build
+RUN apt-get update && apt-get install -y g++ make python3-dev python3-pip curl git
+RUN curl -s https://raw.githubusercontent.com/konlpy/konlpy/master/scripts/mecab.sh | bash
+RUN find /usr/local | grep mecab | xargs tar cvf /tmp/mecab.tar
+
+FROM ubuntu:bionic AS konlpy
+LABEL maintainer="KoNLPy <konlpy@googlegroups.com>, Minho Ryang <minhoryang+konlpy@gmail.com>"
+LABEL org.label-schema.schema-version="1.0"
+LABEL org.label-schema.name="minhoryang/konlpy"
+LABEL org.label-schema.description="KoNLPy"
+LABEL org.label-schema.vcs-url="https://github.com/minhoryang/konlpy/tree/konlpy-grpc/v0.1.0-dockerfile"
+
+RUN apt-get update && \
+	apt-get install -y openjdk-8-jdk python3-pip && \
+    apt-get clean && \
+	rm -rf /var/lib/apt/lists/*
+COPY --from=mecab-build /tmp/mecab.tar /mecab.tar
+COPY --from=mecab-build /tmp/mecab-python-0.996 /tmp/mecab-python-0.996
+RUN tar xvf mecab.tar && \
+    rm mecab.tar && \
+    ldconfig && \
+    python3 -m pip install --upgrade pip && \
+    python3 -m pip install /tmp/mecab-python-0.996 konlpy && \
+	rm -rf /tmp/mecab-python-0.996
+ENTRYPOINT python3
